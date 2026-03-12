@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
+
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0f172a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Energy Dashboard</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -63,8 +65,8 @@ color:white;
 
 .grid{
 display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:20px;
+grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+gap:15px;
 }
 
 .stat{
@@ -96,6 +98,34 @@ color:white;
 
 canvas{
 margin-top:25px;
+}
+@media (max-width:600px){
+
+body{
+padding:15px;
+}
+
+h1{
+font-size:22px;
+}
+
+.card{
+padding:18px;
+}
+
+.row{
+flex-direction:column;
+}
+
+button{
+width:100%;
+}
+
+canvas{
+width:100% !important;
+height:auto !important;
+}
+
 }
 
 </style>
@@ -149,7 +179,7 @@ margin-top:25px;
 <div class="field"><label>Gas €</label><input id="gas"></div>
 <div class="field"><label>KWh</label><input id="kwh"></div>
 <div class="field"><label>M³ Gas</label><input id="m3"></div>
-<div class="field"><label>KWh NO FV</label><input id="nozcs"></div>
+<div class="field"><label>KWh NO ZCS</label><input id="nozcs"></div>
 
 </div>
 
@@ -645,4 +675,3 @@ function importa() {
 
 </body>
 </html>
-
