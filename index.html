@@ -125,7 +125,15 @@ canvas{
 width:100% !important;
 height:auto !important;
 }
+select[size]{
+height:110px;
+overflow-y:auto;
+}
 
+}
+select[size]{
+height:auto;
+overflow-y:auto;
 }
 
 </style>
@@ -149,21 +157,8 @@ height:auto !important;
 
 <div class="field">
 <label>Anno</label>
-<select id="anno">
-<option>2024</option>
-<option>2025</option>
-<option selected>2026</option>
-<option>2027</option>
-<option>2028</option>
-<option>2029</option>
-<option>2030</option>
-<option>2031</option>
-<option>2032</option>
-<option>2033</option>
-<option>2034</option>
-<option>2035</option>
-<option>2036</option>
-</select>
+<select id="anno" size="1"></select>
+
 </div>
 
 <div class="field">
@@ -305,7 +300,17 @@ const mesi=[
 "Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno",
 "Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"
 ]
+for(let a=2000; a<=2099; a++){
 
+let opt=document.createElement("option")
+opt.value=a
+opt.text=a
+
+if(a==2026) opt.selected=true
+
+anno.appendChild(opt)
+
+}
 mesi.forEach(m=>mese.innerHTML+=`<option>${m}</option>`)
 
 let db=JSON.parse(localStorage.getItem("energiaDB"))||{}
@@ -671,9 +676,9 @@ function importa() {
     reader.readAsText(file);
   };
 }
+
 </script>
 
 </body>
 </html>
-
 
