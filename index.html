@@ -306,7 +306,7 @@ let opt=document.createElement("option")
 opt.value=a
 opt.text=a
 
-if(a==2026) opt.selected=true
+if(a == new Date().getFullYear()) opt.selected = true
 
 anno.appendChild(opt)
 
@@ -426,7 +426,7 @@ nozcs+=d.nozcs
 yLuce.innerText=luce.toFixed(2)
 yGas.innerText=gas.toFixed(2)
 yTot.innerText=(luce+gas).toFixed(2)
-yKwh.innerText=kwh
+yKwh.innerText=kwh.toFixed(2)
 yM3.innerText=m3
 if(nozcs == 0){
 
@@ -492,7 +492,7 @@ compEuro.style.color = diffEuro >= 0 ? "red" : "lime"
 
 // differenza KWh
 let diffKwh = y2.kwh - y1.kwh
-compKwh.innerText = diffKwh
+compKwh.innerText = diffKwh.toFixed(2)
 compKwh.style.color = diffKwh >= 0 ? "red" : "lime"
 
 // differenza gas €
@@ -562,7 +562,7 @@ function confrontoMese(){
 
     // Differenza KWh
     let diffKwh = dNext.kwh - dPrev.kwh
-    compMKwh.innerText = diffKwh
+    compMKwh.innerText = diffKwh.toFixed(2)
     compMKwh.style.color = diffKwh >= 0 ? "red" : "lime"
 
     // Differenza gas
@@ -681,4 +681,5 @@ function importa() {
 
 </body>
 </html>
+
 
