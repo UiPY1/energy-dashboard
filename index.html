@@ -365,34 +365,46 @@ mesi.forEach(m=>mese.innerHTML+=`<option>${m}</option>`)
 
 let db=JSON.parse(localStorage.getItem("energiaDB"))||{}
 
-function salva(){
+function salva() {
+  let a = anno.value;
+  let m = mese.value.trim();
 
-let a=anno.value
-let m=mese.value
+  if (!db[a]) db[a] = {};
 
-if(!db[a]) db[a]={}
+  // Controllo se il mese esiste già
+  if (db[a][m]) {
+    alert("⚠️ I dati di questo mese sono già stati inseriti");
+    return;
+  }
 
-function num(v){
-return Number(String(v).replace(",","."))||0
+  function num(v) {
+    return Number(String(v).replace(",", ".")) || 0;
+  }
+
+  db[a][m] = {
+    luce: num(luce.value),
+    gas: num(gas.value),
+    kwh: num(kwh.value),
+    m3: num(m3.value),
+    nozcs: num(nozcs.value)
+  };
+
+  localStorage.setItem("energiaDB", JSON.stringify(db));
+
+  // Svuota input per il prossimo inserimento
+  svuota();
+
+  // Aggiorna riepiloghi, grafici e confronto
+  aggiorna();
+  caricaAnni();
+
+  // Passa al mese successivo solo se esiste
+  let index = mesi.indexOf(mese.value);
+  if (index < mesi.length - 1) {
+    mese.value = mesi[index + 1];
+  }
+  // ❌ NON chiudere il popup qui
 }
-
-db[a][m]={
-luce:num(luce.value),
-gas:num(gas.value),
-kwh:num(kwh.value),
-m3:num(m3.value),
-nozcs:num(nozcs.value)
-}
-
-localStorage.setItem("energiaDB",JSON.stringify(db))
-
-svuota()
-aggiorna()
-caricaAnni()
-chiudiInserimento()
-
-}
-
 function cancella(){
 
 let a=anno.value
