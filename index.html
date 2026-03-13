@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -8,6 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Energy Dashboard</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -24,7 +26,7 @@ padding:40px;
 
 h1{
 text-align:center;
-margin-bottom:40px;
+margin-bottom:30px;
 }
 
 .container{
@@ -99,18 +101,54 @@ color:white;
 canvas{
 margin-top:25px;
 }
+
+.openBtn{
+margin-bottom:20px;
+}
+
+/* POPUP */
+
+.popup{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.7);
+justify-content:center;
+align-items:center;
+z-index:999;
+}
+
+.popup-content{
+background:#1e293b;
+padding:25px;
+border-radius:14px;
+width:95%;
+max-width:700px;
+}
+
+.popup-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:10px;
+}
+
+.closeBtn{
+background:#ef4444;
+color:white;
+border:none;
+padding:6px 10px;
+border-radius:8px;
+cursor:pointer;
+}
+
 @media (max-width:600px){
 
 body{
 padding:15px;
-}
-
-h1{
-font-size:22px;
-}
-
-.card{
-padding:18px;
 }
 
 .row{
@@ -121,19 +159,6 @@ button{
 width:100%;
 }
 
-canvas{
-width:100% !important;
-height:auto !important;
-}
-select[size]{
-height:110px;
-overflow-y:auto;
-}
-
-}
-select[size]{
-height:auto;
-overflow-y:auto;
 }
 
 </style>
@@ -145,20 +170,113 @@ overflow-y:auto;
 
 <div class="container">
 
+<button class="openBtn" onclick="apriInserimento()">➕ Inserisci dati</button>
+
 <div class="card">
 
-<h3>Inserisci dati</h3>
-<div class="row" style="margin-top:10px;">
-  <button onclick="esporta()">Esporta dati</button>
-  <button onclick="importa()">Importa dati</button>
-  <input type="file" id="fileImport" style="display:none" accept=".json">
+<h3>Riepilogo mese</h3>
+
+<div class="grid">
+
+<div class="stat">Luce €<h2 id="mLuce">0</h2></div>
+<div class="stat">Gas €<h2 id="mGas">0</h2></div>
+<div class="stat">Tot €<h2 id="mTot">0</h2></div>
+<div class="stat">KWh<h2 id="mKwh">0</h2></div>
+<div class="stat">Gas M³<h2 id="mM3">0</h2></div>
+<div class="stat">Diff FV KWh<h2 id="mDiff">0</h2></div>
+
 </div>
+
+</div>
+
+<div class="card">
+
+<h3>Riepilogo anno</h3>
+
+<div class="grid">
+
+<div class="stat">Tot Luce €<h2 id="yLuce">0</h2></div>
+<div class="stat">Tot Gas €<h2 id="yGas">0</h2></div>
+<div class="stat">Tot €<h2 id="yTot">0</h2></div>
+<div class="stat">Tot KWh<h2 id="yKwh">0</h2></div>
+<div class="stat">Tot M³<h2 id="yM3">0</h2></div>
+<div class="stat">Diff FV KWh<h2 id="yDiff">0</h2></div>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h3>Confronto anni</h3>
+
+<div class="row">
+
+<select id="anno1"></select>
+<select id="anno2"></select>
+
+</div>
+
+<div class="grid">
+
+<div class="stat">Differenza Luce € <h2 id="compEuro">0</h2></div>
+<div class="stat">Differenza KWh <h2 id="compKwh">0</h2></div>
+<div class="stat">Differenza Gas € <h2 id="compGas">0</h2></div>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h3>Confronto mese tra anni</h3>
+
+<div class="row">
+
+<select id="annoM1"></select>
+<select id="annoM2"></select>
+<select id="meseComp"></select>
+
+</div>
+
+<div class="grid">
+
+<div class="stat">Differenza Luce € <h2 id="compMEuro">0 €</h2></div>
+<div class="stat">Differenza KWh <h2 id="compMKwh">0</h2></div>
+<div class="stat">Differenza Gas € <h2 id="compMGas">0 €</h2></div>
+
+</div>
+
+</div>
+
+<div class="card">
+<h3>Andamento KWh</h3>
+<canvas id="graficoKwh"></canvas>
+</div>
+
+<div class="card">
+<h3>Andamento Costi €</h3>
+<canvas id="graficoEuro"></canvas>
+</div>
+
+</div>
+
+<!-- POPUP INSERIMENTO -->
+
+<div id="popupInserimento" class="popup">
+
+<div class="popup-content">
+
+<div class="popup-header">
+<h3>Inserisci dati</h3>
+<button class="closeBtn" onclick="chiudiInserimento()">✕</button>
+</div>
+
 <div class="row">
 
 <div class="field">
 <label>Anno</label>
-<select id="anno" size="1"></select>
-
+<select id="anno"></select>
 </div>
 
 <div class="field">
@@ -182,117 +300,14 @@ overflow-y:auto;
 
 <button onclick="salva()">Salva dati</button>
 <button class="delete" onclick="cancella()">Cancella mese</button>
+<button onclick="esporta()">Esporta</button>
+<button onclick="importa()">Importa</button>
+<input type="file" id="fileImport" style="display:none" accept=".json">
 
 </div>
 
 </div>
-
-
-<div class="card">
-
-<h3>Riepilogo mese</h3>
-
-<div class="grid">
-
-<div class="stat">Luce €<h2 id="mLuce">0</h2></div>
-<div class="stat">Gas €<h2 id="mGas">0</h2></div>
-<div class="stat">Tot €<h2 id="mTot">0</h2></div>
-<div class="stat">KWh<h2 id="mKwh">0</h2></div>
-<div class="stat">Gas M³<h2 id="mM3">0</h2></div>
-<div class="stat">Diff FV KWh<h2 id="mDiff">0</h2></div>
-
 </div>
-
-</div>
-
-
-<div class="card">
-
-<h3>Riepilogo anno</h3>
-
-<div class="grid">
-
-<div class="stat">Tot Luce €<h2 id="yLuce">0</h2></div>
-<div class="stat">Tot Gas €<h2 id="yGas">0</h2></div>
-<div class="stat">Tot €<h2 id="yTot">0</h2></div>
-<div class="stat">Tot KWh<h2 id="yKwh">0</h2></div>
-<div class="stat">Tot M³<h2 id="yM3">0</h2></div>
-<div class="stat">Diff FV KWh<h2 id="yDiff">0</h2></div>
-
-</div>
-
-</div>
-
-
-<div class="card">
-
-<h3>Confronto anni</h3>
-<div class="card">
-
-<h3>Confronto mese tra anni</h3>
-
-<div class="row">
-
-<select id="annoM1"></select>
-<select id="annoM2"></select>
-<select id="meseComp"></select>
-
-</div>
-
-<div class="grid">
-
-<div class="stat">
-Differenza Luce € 
-<h2 id="compMEuro">0 €</h2>
-</div>
-
-<div class="stat">
-Differenza KWh
-<h2 id="compMKwh">0</h2>
-</div>
-
-<div class="stat">
-Differenza Gas €
-<h2 id="compMGas">0</h2>
-</div>
-
-</div>
-
-</div>
-<div class="row">
-
-<select id="anno1"></select>
-<select id="anno2"></select>
-
-</div>
-
-<div class="grid">
-
-<div class="stat">Differenza Luce € <h2 id="compEuro">0</h2></div>
-<div class="stat">Differenza KWh<h2 id="compKwh">0</h2></div>
-<div class="stat">Differenza Gas<h2 id="compGas">0</h2></div>
-
-</div>
-
-</div>
-
-
-<div class="card">
-
-<h3>Andamento KWh</h3>
-<canvas id="graficoKwh"></canvas>
-
-</div>
-
-<div class="card">
-
-<h3>Andamento Costi €</h3>
-<canvas id="graficoEuro"></canvas>
-
-</div>
-
-</div>
-
 
 <script>
 
@@ -300,7 +315,8 @@ const mesi=[
 "Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno",
 "Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"
 ]
-for(let a=2000; a<=2099; a++){
+
+for(let a=2000;a<=2099;a++){
 
 let opt=document.createElement("option")
 opt.value=a
@@ -311,51 +327,36 @@ if(a==2026) opt.selected=true
 anno.appendChild(opt)
 
 }
+
 mesi.forEach(m=>mese.innerHTML+=`<option>${m}</option>`)
 
 let db=JSON.parse(localStorage.getItem("energiaDB"))||{}
 
-function salva() {
+function salva(){
 
-  let a = anno.value
-  let m = mese.value.trim() // rimuove spazi
+let a=anno.value
+let m=mese.value
 
-  if (!db[a]) db[a] = {}
+if(!db[a]) db[a]={}
 
-  if (db[a][m]) {
-    alert("Questo mese è già stato inserito")
-    return
-  }
-
-  // funzione interna per convertire correttamente i valori
-  function num(v) {
-    return Number(String(v).replace(",", ".")) || 0
-  }
-
-  db[a][m] = {
-    luce: num(luce.value),
-    gas: num(gas.value),
-    kwh: num(kwh.value),
-    m3: num(m3.value),
-    nozcs: num(nozcs.value)
-  }
-
-  localStorage.setItem("energiaDB", JSON.stringify(db))
-
-  svuota()
-  meseSuccessivo()
-  aggiorna()
+function num(v){
+return Number(String(v).replace(",","."))||0
 }
 
-function meseSuccessivo(){
-
-let index=mesi.indexOf(mese.value)
-
-if(index<11){
-
-mese.value=mesi[index+1]
-
+db[a][m]={
+luce:num(luce.value),
+gas:num(gas.value),
+kwh:num(kwh.value),
+m3:num(m3.value),
+nozcs:num(nozcs.value)
 }
+
+localStorage.setItem("energiaDB",JSON.stringify(db))
+
+svuota()
+aggiorna()
+caricaAnni()
+chiudiInserimento()
 
 }
 
@@ -370,96 +371,93 @@ delete db[a][m]
 
 localStorage.setItem("energiaDB",JSON.stringify(db))
 
-
-
-
 }
-  // azzera i valori del riepilogo mese
-    mLuce.innerText = 0
-    mGas.innerText = 0
-    mTot.innerText = 0
-    mKwh.innerText = 0
-    mM3.innerText = 0
-    mDiff.innerText = "N.A."
-	aggiorna()
+
+aggiorna()
 
 }
 
 function svuota(){
-
 document.querySelectorAll("input").forEach(i=>i.value="")
-luce.focus()
+}
+
+function aggiorna(){
+
+let a=anno.value
+let m=mese.value
+
+let dati=db[a]?.[m]
+
+if(dati){
+
+mLuce.innerText=dati.luce
+mGas.innerText=dati.gas
+mTot.innerText=(dati.luce+dati.gas).toFixed(2)
+mKwh.innerText=dati.kwh
+mM3.innerText=dati.m3
+
+if(dati.nozcs==0){
+
+mDiff.innerText="N.A."
+
+}else{
+
+let diff=(dati.nozcs-dati.kwh).toFixed(2)
+mDiff.innerText=diff
+//mDiff.style.color=diff>=0?"lime":"red"
 
 }
 
-function aggiorna() {
+}else{
 
-  let a = anno.value
-  let m = mese.value
+mLuce.innerText=0
+mGas.innerText=0
+mTot.innerText=0
+mKwh.innerText=0
+mM3.innerText=0
+mDiff.innerText="N.A."
 
-  let dati = db[a]?.[m]
-
-  if (dati) {
-      mLuce.innerText = dati.luce
-      mGas.innerText = dati.gas
-      mTot.innerText = (dati.luce + dati.gas).toFixed(2)
-      mKwh.innerText = dati.kwh
-      mM3.innerText = dati.m3
-      if (dati.nozcs == 0) {
-          mDiff.innerText = "N.A."
-          //mDiff.style.color = "white"
-      } else {
-          let diff = (dati.nozcs - dati.kwh).toFixed(2)
-          mDiff.innerText = diff
-          //mDiff.style.color = diff >= 0 ? "lime" : "red"
-      }
-  } else {
-      // mese senza dati -> azzera valori
-      mLuce.innerText = 0
-      mGas.innerText = 0
-      mTot.innerText = 0
-      mKwh.innerText = 0
-      mM3.innerText = 0
-      mDiff.innerText = "N.A."
-      //mDiff.style.color = "white"
-  }
-
-  // Aggiorna riepilogo anno e grafici normalmente
-  let luce = 0
-  let gas = 0
-  let kwh = 0
-  let m3 = 0
-  let nozcs = 0
-
-  let datiAnno = db[a] || {}
-
-  Object.values(datiAnno).forEach(d => {
-      luce += d.luce
-      gas += d.gas
-      kwh += d.kwh
-      m3 += d.m3
-      nozcs += d.nozcs
-  })
-
-  yLuce.innerText = luce.toFixed(2)
-  yGas.innerText = gas.toFixed(2)
-  yTot.innerText = (luce + gas).toFixed(2)
-  yKwh.innerText = kwh
-  yM3.innerText = m3
-
-  if (nozcs == 0) {
-      yDiff.innerText = "N.A."
-      //yDiff.style.color = "white"
-  } else {
-      let diff = (nozcs - kwh).toFixed(2)
-      yDiff.innerText = diff
-      yDiff.style.color = diff >= 0 ? "lime" : "red"
-  }
-
-  grafici(datiAnno)
-  aggiornaConfronto()
-  caricaAnni()
 }
+
+let luce=0
+let gas=0
+let kwh=0
+let m3=0
+let nozcs=0
+
+let datiAnno=db[a]||{}
+
+Object.values(datiAnno).forEach(d=>{
+luce+=d.luce
+gas+=d.gas
+kwh+=d.kwh
+m3+=d.m3
+nozcs+=d.nozcs
+})
+
+yLuce.innerText=luce.toFixed(2)
+yGas.innerText=gas.toFixed(2)
+yTot.innerText=(luce+gas).toFixed(2)
+yKwh.innerText=kwh
+yM3.innerText=m3
+
+if(nozcs==0){
+
+yDiff.innerText="N.A."
+
+}else{
+
+let diff=(nozcs-kwh).toFixed(2)
+yDiff.innerText=diff
+yDiff.style.color=diff>=0?"lime":"red"
+
+}
+
+grafici(datiAnno)
+aggiornaConfronto()
+
+}
+
 function totaleAnno(a){
 
 let dati=db[a]||{}
@@ -482,32 +480,50 @@ return{luce,gas,kwh,m3}
 
 function aggiornaConfronto(){
 
-let a1 = Number(anno1.value)
-let a2 = Number(anno2.value)
+let a1=Number(anno1.value)
+let a2=Number(anno2.value)
 
-if(!a1 || !a2) return
+if(!a1||!a2) return
 
-// trova automaticamente anno precedente e successivo
-let annoPrev = Math.min(a1,a2)
-let annoNext = Math.max(a1,a2)
+let y1=totaleAnno(a1)
+let y2=totaleAnno(a2)
 
-let y1 = totaleAnno(annoPrev)
-let y2 = totaleAnno(annoNext)
+let diffEuro=(y2.luce+y2.gas)-(y1.luce+y1.gas)
+compEuro.innerText=diffEuro.toFixed(2)+" €"
+compEuro.style.color=diffEuro>=0?"red":"lime"
 
-// differenza totale €
-let diffEuro = (y2.luce+y2.gas)-(y1.luce+y1.gas)
-compEuro.innerText = diffEuro.toFixed(2) + " €"
-compEuro.style.color = diffEuro >= 0 ? "red" : "lime"
+let diffKwh=y2.kwh-y1.kwh
+compKwh.innerText=diffKwh
+compKwh.style.color=diffKwh>=0?"red":"lime"
 
-// differenza KWh
-let diffKwh = y2.kwh - y1.kwh
-compKwh.innerText = diffKwh
-compKwh.style.color = diffKwh >= 0 ? "red" : "lime"
+let diffGas=y2.gas-y1.gas
+compGas.innerText=diffGas.toFixed(2)+" €"
+compGas.style.color=diffGas>=0?"red":"lime"
 
-// differenza gas €
-let diffGas = y2.gas - y1.gas
-compGas.innerText = diffGas.toFixed(2) + " €"
-compGas.style.color = diffGas >= 0 ? "red" : "lime"
+}
+
+function confrontoMese(){
+
+let a1=annoM1.value
+let a2=annoM2.value
+let m=meseComp.value
+
+let d1=db[a1]?.[m]
+let d2=db[a2]?.[m]
+
+if(!d1||!d2) return
+
+let diffLuce=d2.luce-d1.luce
+compMEuro.innerText=diffLuce.toFixed(2)+" €"
+compMEuro.style.color=diffLuce>=0?"red":"lime"
+
+let diffKwh=d2.kwh-d1.kwh
+compMKwh.innerText=diffKwh
+compMKwh.style.color=diffKwh>=0?"red":"lime"
+
+let diffGas=d2.gas-d1.gas
+compMGas.innerText=diffGas.toFixed(2)+" €"
+compMGas.style.color=diffGas>=0?"red":"lime"
 
 }
 
@@ -539,46 +555,7 @@ meseComp.innerHTML+=`<option>${m}</option>`
 })
 
 }
-function confrontoMese(){
-    let a1 = annoM1.value
-    let a2 = annoM2.value
-    let m  = meseComp.value.trim()
-    
-    let d1 = db[a1]?.[m]
-    let d2 = db[a2]?.[m]
 
-    if(!d1 || !d2){
-        compMEuro.innerText="0 €"
-        compMEuro.style.color = "white"
-        compMKwh.innerText="0"
-        compMKwh.style.color = "white"
-        compMGas.innerText="0 €"
-        compMGas.style.color = "white"
-        return
-    }
-
-    // Determina anno precedente e anno successivo in ordine corretto
-    let annoPrecedente = Math.min(Number(a1), Number(a2))
-    let annoSuccessivo = Math.max(Number(a1), Number(a2))
-
-    let dPrev = db[annoPrecedente][m]
-    let dNext = db[annoSuccessivo][m]
-
-    // Differenza luce
-    let diffLuce = dNext.luce - dPrev.luce
-    compMEuro.innerText = diffLuce.toFixed(2) + " €"
-    compMEuro.style.color = diffLuce >= 0 ? "red" : "lime"
-
-    // Differenza KWh
-    let diffKwh = dNext.kwh - dPrev.kwh
-    compMKwh.innerText = diffKwh
-    compMKwh.style.color = diffKwh >= 0 ? "red" : "lime"
-
-    // Differenza gas
-    let diffGas = dNext.gas - dPrev.gas
-    compMGas.innerText = diffGas.toFixed(2) + " €"
-    compMGas.style.color = diffGas >= 0 ? "red" : "lime"
-}
 let chart1
 let chart2
 
@@ -615,76 +592,98 @@ data:euro
 
 }
 
-anno.addEventListener("change",aggiorna)
-mese.addEventListener("change",aggiorna)
-anno1.addEventListener("change",aggiornaConfronto)
-anno2.addEventListener("change",aggiornaConfronto)
+function esporta(){
 
-document.querySelectorAll("input").forEach((input,i,arr)=>{
+const dati=localStorage.getItem("energiaDB")
 
-input.addEventListener("keydown",e=>{
+if(!dati){
+alert("Non ci sono dati")
+return
+}
 
-if(e.key==="Enter"){
+const blob=new Blob([dati],{type:"application/json"})
+const url=URL.createObjectURL(blob)
 
-e.preventDefault()
+const a=document.createElement("a")
+a.href=url
+a.download="energiaDB_backup.json"
+a.click()
 
-let next=arr[i+1]
+URL.revokeObjectURL(url)
 
-if(next) next.focus()
+}
+
+function importa(){
+
+fileImport.click()
+
+fileImport.onchange=(e)=>{
+
+const file=e.target.files[0]
+
+if(!file) return
+
+const reader=new FileReader()
+
+reader.onload=(event)=>{
+
+try{
+
+const datiImportati=JSON.parse(event.target.result)
+
+db={...db,...datiImportati}
+
+localStorage.setItem("energiaDB",JSON.stringify(db))
+
+aggiorna()
+caricaAnni()
+
+alert("Import completato")
+
+}catch(err){
+
+alert("Errore import")
+
+}
+
+}
+
+reader.readAsText(file)
+
+}
+
+}
+
+function apriInserimento(){
+popupInserimento.style.display="flex"
+}
+
+function chiudiInserimento(){
+popupInserimento.style.display="none"
+}
+
+window.addEventListener("click",function(e){
+
+if(e.target===popupInserimento){
+
+popupInserimento.style.display="none"
 
 }
 
 })
 
-})
+anno.addEventListener("change",aggiorna)
+mese.addEventListener("change",aggiorna)
 
-aggiorna()
+anno1.addEventListener("change",aggiornaConfronto)
+anno2.addEventListener("change",aggiornaConfronto)
+
 annoM1.addEventListener("change",confrontoMese)
 annoM2.addEventListener("change",confrontoMese)
 meseComp.addEventListener("change",confrontoMese)
 
-function esporta() {
-  const dati = localStorage.getItem("energiaDB");
-  if (!dati) {
-    alert("Non ci sono dati da esportare.");
-    return;
-  }
-
-  const blob = new Blob([dati], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "energiaDB_backup.json";
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function importa() {
-  const fileInput = document.getElementById("fileImport");
-  fileInput.click();
-
-  fileInput.onchange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      try {
-        const datiImportati = JSON.parse(event.target.result);
-        if (typeof datiImportati !== "object") throw "Formato non valido";
-
-        // Unisci dati esistenti con quelli importati
-        db = { ...db, ...datiImportati };
-        localStorage.setItem("energiaDB", JSON.stringify(db));
-        aggiorna();
-        alert("Dati importati con successo!");
-      } catch (err) {
-        alert("Errore durante l'importazione: " + err);
-      }
-    };
-    reader.readAsText(file);
-  };
-}
+caricaAnni()
+aggiorna()
 
 </script>
 
