@@ -317,9 +317,32 @@ function confrontoMese() {
 }
 // CARICA ANNI NEI SELECT
 function caricaAnni(){
-  let anni=Object.keys(db); [anno1,anno2,annoM1,annoM2,riepilogoAnno,riepilogoAnnoMese].forEach(sel=>sel.innerHTML="");
-  anni.forEach(a=>{[anno1,anno2,annoM1,annoM2,riepilogoAnno,riepilogoAnnoMese].forEach(sel=>sel.innerHTML+=`<option>${a}</option>`);});
+  let anni = Object.keys(db);
+  let oggi = new Date();
+  let annoCorrente = oggi.getFullYear();
+  let meseCorrente = oggi.getMonth() + 1; // 0-11 quindi +1
+
+  [anno1,anno2,annoM1,annoM2,riepilogoAnno,riepilogoAnnoMese].forEach(sel=>{
+    sel.innerHTML="";
+  });
+
+  anni.forEach(a=>{
+    [anno1,anno2,annoM1,annoM2,riepilogoAnno,riepilogoAnnoMese].forEach(sel=>{
+      sel.innerHTML += `<option value="${a}">${a}</option>`;
+    });
+  });
+
+  // seleziona automaticamente l'anno corrente
+  [anno1,anno2,annoM1,annoM2,riepilogoAnno,riepilogoAnnoMese].forEach(sel=>{
+    sel.value = annoCorrente;
+  });
+
+[mese, riepilogoMese, meseComp].forEach(sel=>{
+  if(sel) sel.selectedIndex = new Date().getMonth();
+});
+
 }
+
 
 // GRAFICI
 let chart1, chart2;
