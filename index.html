@@ -185,6 +185,14 @@ max-height:none;
 }
 
 }
+input, select{
+padding:10px;
+border-radius:8px;
+border:none;
+background:#0f172a;
+color:white;
+font-size:16px;
+}
 
 </style>
 </head>
@@ -710,6 +718,24 @@ meseComp.addEventListener("change",confrontoMese)
 caricaAnni()
 aggiorna()
 
+document.addEventListener("keydown", function(e){
+
+if(e.key === "Enter"){
+
+let inputs = [...document.querySelectorAll("#popupInserimento input")]
+
+let index = inputs.indexOf(document.activeElement)
+
+if(index > -1 && index < inputs.length - 1){
+
+e.preventDefault()
+inputs[index + 1].focus()
+
+}
+
+}
+
+})
 </script>
 
 </body>
