@@ -1,202 +1,44 @@
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
-
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0f172a">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Energy Dashboard</title>
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <style>
-
 body{
-font-family:system-ui;
-background:#0f172a;
-color:white;
-margin:0;
-padding:40px;
+  font-family:system-ui;
+  background:#0f172a;
+  color:white;
+  margin:0;
+  padding:20px;
 }
-
-h1{
-text-align:center;
-margin-bottom:30px;
-}
-
-.container{
-max-width:1000px;
-margin:auto;
-}
-
-.card{
-background:#1e293b;
-padding:25px;
-border-radius:14px;
-margin-bottom:25px;
-box-shadow:0 5px 20px rgba(0,0,0,0.3);
-}
-
-.row{
-display:flex;
-gap:20px;
-flex-wrap:wrap;
-margin-bottom:20px;
-}
-
-.field{
-flex:1;
-min-width:150px;
-display:flex;
-flex-direction:column;
-gap:6px;
-}
-
-input,select{
-padding:10px;
-border-radius:8px;
-border:none;
-background:#0f172a;
-color:white;
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-gap:15px;
-}
-
-.stat{
-background:#0f172a;
-padding:18px;
-border-radius:10px;
-text-align:center;
-}
-
-.stat h2{
-margin:0;
-color:#38bdf8;
-}
-
-button{
-padding:12px;
-border:none;
-border-radius:10px;
-background:#38bdf8;
-color:black;
-font-weight:bold;
-cursor:pointer;
-}
-
-.delete{
-background:#ef4444;
-color:white;
-}
-
-canvas{
-margin-top:25px;
-}
-
-.openBtn{
-margin-bottom:20px;
-}
-
+h1{text-align:center;margin-bottom:20px;}
+.container{max-width:1000px;margin:auto;}
+.card{background:#1e293b;padding:20px;border-radius:14px;margin-bottom:20px;box-shadow:0 5px 20px rgba(0,0,0,0.3);}
+.row{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:15px;}
+.field{flex:1;min-width:120px;display:flex;flex-direction:column;gap:5px;}
+input,select{padding:10px;border-radius:8px;border:none;background:#0f172a;color:white;font-size:16px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;}
+.stat{background:#0f172a;padding:15px;border-radius:10px;text-align:center;}
+.stat h2{margin:0;color:#38bdf8;}
+button{padding:10px;border:none;border-radius:8px;background:#38bdf8;color:black;font-weight:bold;cursor:pointer;}
+.delete{background:#ef4444;color:white;}
+canvas{margin-top:20px;width:100% !important;height:auto !important;}
+.openBtn{margin-bottom:15px;}
 /* POPUP */
-
-.popup{
-display:none;
-position:fixed;
-top:0;
-left:0;
-width:100vw;
-height:100vh;
-background:rgba(0,0,0,0.7);
-z-index:999;
-
-justify-content:center;
-align-items:flex-start;
-
-overflow-y:auto;
-padding:20px;
-box-sizing:border-box;
-}
-
-.popup-content{
-background:#1e293b;
-padding:20px;
-border-radius:14px;
-
-width:100%;
-max-width:600px;
-
-max-height:90vh;
-overflow-y:auto;
-
-box-sizing:border-box;
-}
-
-.popup-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:10px;
-}
-
-.closeBtn{
-background:#ef4444;
-color:white;
-border:none;
-padding:6px 10px;
-border-radius:8px;
-cursor:pointer;
-}
-
+.popup{display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.7);z-index:999;justify-content:center;align-items:flex-start;overflow-y:auto;padding:20px;box-sizing:border-box;}
+.popup-content{background:#1e293b;padding:20px;border-radius:14px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;box-sizing:border-box;}
+.popup-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.closeBtn{background:#ef4444;color:white;border:none;padding:6px 10px;border-radius:8px;cursor:pointer;}
 @media (max-width:600px){
-
-body{
-padding:15px;
+  body{padding:10px;}
+  .row{flex-direction:column;}
+  button{width:100%;}
+  .popup-content{width:100%;max-width:100%;max-height:none;}
 }
-
-.row{
-flex-direction:column;
-}
-
-button{
-width:100%;
-}
-
-}
-@media (max-width:600px){
-
-.popup{
-align-items:flex-start;
-padding:10px;
-}
-
-.popup-content{
-width:100%;
-max-width:100%;
-max-height:none;
-}
-
-}
-input, select{
-padding:10px;
-border-radius:8px;
-border:none;
-background:#0f172a;
-color:white;
-font-size:16px;
-}
-
 </style>
 </head>
-
 <body>
 
 <h1>⚡ Dashboard Consumi Energia</h1>
@@ -205,81 +47,66 @@ font-size:16px;
 
 <button class="openBtn" onclick="apriInserimento()">➕ Inserisci dati</button>
 
+<!-- Riepilogo mese -->
 <div class="card">
-
 <h3>Riepilogo mese</h3>
-
-<div class="grid">
-
-<div class="stat">Luce €<h2 id="mLuce">0</h2></div>
-<div class="stat">Gas €<h2 id="mGas">0</h2></div>
-<div class="stat">Tot €<h2 id="mTot">0</h2></div>
-<div class="stat">KWh<h2 id="mKwh">0</h2></div>
-<div class="stat">Gas M³<h2 id="mM3">0</h2></div>
-<div class="stat">Diff FV KWh<h2 id="mDiff">0</h2></div>
-
-</div>
-
-</div>
-
-<div class="card">
-
-<h3>Riepilogo anno</h3>
-
-<div class="grid">
-
-<div class="stat">Tot Luce €<h2 id="yLuce">0</h2></div>
-<div class="stat">Tot Gas €<h2 id="yGas">0</h2></div>
-<div class="stat">Tot €<h2 id="yTot">0</h2></div>
-<div class="stat">Tot KWh<h2 id="yKwh">0</h2></div>
-<div class="stat">Tot M³<h2 id="yM3">0</h2></div>
-<div class="stat">Diff FV KWh<h2 id="yDiff">0</h2></div>
-
-</div>
-
-</div>
-
-<div class="card">
-
-<h3>Confronto anni</h3>
-
 <div class="row">
+  <div class="field"><label>Anno</label><select id="riepilogoAnnoMese"></select></div>
+  <div class="field"><label>Mese</label><select id="riepilogoMese"></select></div>
+</div>
+<div class="grid">
+  <div class="stat">Luce €<h2 id="mLuce">0</h2></div>
+  <div class="stat">Gas €<h2 id="mGas">0</h2></div>
+  <div class="stat">Tot €<h2 id="mTot">0</h2></div>
+  <div class="stat">KWh<h2 id="mKwh">0</h2></div>
+  <div class="stat">Gas M³<h2 id="mM3">0</h2></div>
+  <div class="stat">Diff FV KWh<h2 id="mDiff">0</h2></div>
+</div>
+</div>
 
+<!-- Riepilogo anno -->
+<div class="card">
+<h3>Riepilogo anno</h3>
+<div class="row">
+  <div class="field"><label>Anno</label><select id="riepilogoAnno"></select></div>
+</div>
+<div class="grid">
+  <div class="stat">Tot Luce €<h2 id="yLuce">0</h2></div>
+  <div class="stat">Tot Gas €<h2 id="yGas">0</h2></div>
+  <div class="stat">Tot €<h2 id="yTot">0</h2></div>
+  <div class="stat">Tot KWh<h2 id="yKwh">0</h2></div>
+  <div class="stat">Tot M³<h2 id="yM3">0</h2></div>
+  <div class="stat">Diff FV KWh<h2 id="yDiff">0</h2></div>
+</div>
+</div>
+
+<!-- Confronto anni -->
+<div class="card">
+<h3>Confronto anni</h3>
+<div class="row">
 <select id="anno1"></select>
 <select id="anno2"></select>
-
 </div>
-
 <div class="grid">
-
 <div class="stat">Differenza Luce € <h2 id="compEuro">0</h2></div>
 <div class="stat">Differenza KWh <h2 id="compKwh">0</h2></div>
 <div class="stat">Differenza Gas € <h2 id="compGas">0</h2></div>
-
+</div>
 </div>
 
-</div>
-
+<!-- Confronto mese tra anni -->
 <div class="card">
-
 <h3>Confronto mese tra anni</h3>
-
 <div class="row">
-
 <select id="annoM1"></select>
 <select id="annoM2"></select>
 <select id="meseComp"></select>
-
 </div>
-
 <div class="grid">
-
 <div class="stat">Differenza Luce € <h2 id="compMEuro">0 €</h2></div>
 <div class="stat">Differenza KWh <h2 id="compMKwh">0</h2></div>
 <div class="stat">Differenza Gas € <h2 id="compMGas">0 €</h2></div>
-
 </div>
-
 </div>
 
 <div class="card">
@@ -295,461 +122,191 @@ font-size:16px;
 </div>
 
 <!-- POPUP INSERIMENTO -->
-
 <div id="popupInserimento" class="popup">
-
 <div class="popup-content">
-
 <div class="popup-header">
 <h3>Inserisci dati</h3>
 <button class="closeBtn" onclick="chiudiInserimento()">✕</button>
 </div>
 
 <div class="row">
-
-<div class="field">
-<label>Anno</label>
-<select id="anno"></select>
-</div>
-
-<div class="field">
-<label>Mese</label>
-<select id="mese"></select>
-</div>
-
+<div class="field"><label>Anno</label><select id="anno"></select></div>
+<div class="field"><label>Mese</label><select id="mese"></select></div>
 </div>
 
 <div class="row">
-
 <div class="field"><label>Luce €</label><input id="luce"></div>
 <div class="field"><label>Gas €</label><input id="gas"></div>
 <div class="field"><label>KWh</label><input id="kwh"></div>
 <div class="field"><label>M³ Gas</label><input id="m3"></div>
 <div class="field"><label>KWh NO FV</label><input id="nozcs"></div>
-
 </div>
 
 <div class="row">
-
 <button onclick="salva()">Salva dati</button>
 <button class="delete" onclick="cancella()">Cancella mese</button>
 <button onclick="esporta()">Esporta</button>
 <button onclick="importa()">Importa</button>
 <input type="file" id="fileImport" style="display:none" accept=".json">
-
 </div>
-
 </div>
 </div>
 
 <script>
+const mesi=["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"];
+let db=JSON.parse(localStorage.getItem("energiaDB"))||{};
 
-const mesi=[
-"Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno",
-"Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"
-]
-
-for(let a=2000;a<=2099;a++){
-
-let opt=document.createElement("option")
-opt.value=a
-opt.text=a
-
-if(a==2026) opt.selected=true
-
-anno.appendChild(opt)
-
+// Popola anni e mesi in tutti i select
+function popolaSelect(){
+  for(let a=2000;a<=2099;a++){
+    [anno, riepilogoAnnoMese, riepilogoAnno].forEach(sel=>{
+      let opt=document.createElement("option"); opt.value=opt.text=a; if(a==2026) opt.selected=true; sel.appendChild(opt);
+    });
+  }
+  mesi.forEach(m=>{mese.innerHTML+=`<option>${m}</option>`; riepilogoMese.innerHTML+=`<option>${m}</option>`; meseComp.innerHTML+=`<option>${m}</option>`;});
 }
+popolaSelect();
 
-mesi.forEach(m=>mese.innerHTML+=`<option>${m}</option>`)
-
-let db=JSON.parse(localStorage.getItem("energiaDB"))||{}
-
-function salva() {
-  let a = anno.value;
-  let m = mese.value.trim();
-
-  if (!db[a]) db[a] = {};
-
-  // Controllo se il mese esiste già
-  if (db[a][m]) {
-    alert("⚠️ I dati di questo mese sono già stati inseriti");
-    return;
-  }
-
-  function num(v) {
-    return Number(String(v).replace(",", ".")) || 0;
-  }
-
-  db[a][m] = {
-    luce: num(luce.value),
-    gas: num(gas.value),
-    kwh: num(kwh.value),
-    m3: num(m3.value),
-    nozcs: num(nozcs.value)
-  };
-
+// SALVA DATI
+function salva(){
+  let a=anno.value, m=mese.value.trim();
+  if(!db[a]) db[a]={};
+  if(db[a][m]) {alert("⚠️ I dati di questo mese sono già stati inseriti"); return;}
+  function num(v){return Number(String(v).replace(",", "."))||0;}
+  db[a][m]={luce:num(luce.value), gas:num(gas.value), kwh:num(kwh.value), m3:num(m3.value), nozcs:num(nozcs.value)};
   localStorage.setItem("energiaDB", JSON.stringify(db));
-
-  // Svuota input per il prossimo inserimento
-  svuota();
-
-  // Aggiorna riepiloghi, grafici e confronto
-  aggiorna();
-  caricaAnni();
-
-  // Passa al mese successivo solo se esiste
-  let index = mesi.indexOf(mese.value);
-  if (index < mesi.length - 1) {
-    mese.value = mesi[index + 1];
-  }
-  // ❌ NON chiudere il popup qui
+  svuota(); aggiorna(); caricaAnni();
+  // mese successivo
+  let index=mesi.indexOf(mese.value); if(index<mesi.length-1) mese.value=mesi[index+1];
 }
+
+// CANCELLA MESE
 function cancella(){
-
-let a=anno.value
-let m=mese.value
-
-if(db[a] && db[a][m]){
-
-delete db[a][m]
-
-localStorage.setItem("energiaDB",JSON.stringify(db))
-
+  let a=anno.value, m=mese.value;
+  if(db[a]&&db[a][m]) delete db[a][m]; localStorage.setItem("energiaDB", JSON.stringify(db));
+  aggiorna(); caricaAnni();
 }
 
-aggiorna()
+// SVUOTA INPUT
+function svuota(){document.querySelectorAll("#popupInserimento input").forEach(i=>i.value="");}
 
-}
-
-function svuota(){
-document.querySelectorAll("input").forEach(i=>i.value="")
-}
-
+// AGGIORNA RIEPILOGHI E GRAFICI
 function aggiorna(){
-
-let a=anno.value
-let m=mese.value
-
-let dati=db[a]?.[m]
-
-if(dati){
-
-mLuce.innerText=dati.luce
-mGas.innerText=dati.gas
-mTot.innerText=(dati.luce+dati.gas).toFixed(2)
-mKwh.innerText=dati.kwh
-mM3.innerText=dati.m3
-
-if(dati.nozcs==0){
-
-mDiff.innerText="N.A."
-
-}else{
-
-let diff=(dati.nozcs-dati.kwh).toFixed(2)
-mDiff.innerText=diff
-//mDiff.style.color=diff>=0?"lime":"red"
-
+  let a=riepilogoAnnoMese.value||anno.value, m=riepilogoMese.value||mese.value;
+  let dati=db[a]?.[m];
+  if(dati){
+    mLuce.innerText=dati.luce; mGas.innerText=dati.gas; mTot.innerText=(dati.luce+dati.gas).toFixed(2);
+    mKwh.innerText=dati.kwh; mM3.innerText=dati.m3;
+    mDiff.innerText=dati.nozcs==0?"N.A.":(dati.nozcs-dati.kwh).toFixed(2);
+    mDiff.style.color=dati.nozcs-dati.kwh>=0?"lime":"red";
+  }else{
+    mLuce.innerText=0; mGas.innerText=0; mTot.innerText=0; mKwh.innerText=0; mM3.innerText=0; mDiff.innerText="N.A.";
+    mDiff.style.color="white";
+  }
+  // anno
+  let luce=0, gas=0, kwh=0, m3=0, nozcs=0;
+  let datiAnno=db[riepilogoAnno.value||anno.value]||{};
+  Object.values(datiAnno).forEach(d=>{luce+=d.luce; gas+=d.gas; kwh+=d.kwh; m3+=d.m3; nozcs+=d.nozcs;});
+  yLuce.innerText=luce.toFixed(2); yGas.innerText=gas.toFixed(2); yTot.innerText=(luce+gas).toFixed(2);
+  yKwh.innerText=kwh; yM3.innerText=m3;
+  yDiff.innerText=nozcs==0?"N.A.":(nozcs-kwh).toFixed(2);
+  yDiff.style.color=nozcs-kwh>=0?"lime":"red";
+  grafici(datiAnno); aggiornaConfronto(); confrontoMese();
 }
 
-}else{
+// TOTALE ANNO
+function totaleAnno(a){let dati=db[a]||{}; let luce=0, gas=0, kwh=0, m3=0; Object.values(dati).forEach(d=>{luce+=d.luce; gas+=d.gas; kwh+=d.kwh; m3+=d.m3;}); return {luce, gas, kwh, m3};}
+function aggiornaRiepilogoAnno() {
+    let a = riepilogoAnno.value;
+    let datiAnno = db[a] || {};
 
-mLuce.innerText=0
-mGas.innerText=0
-mTot.innerText=0
-mKwh.innerText=0
-mM3.innerText=0
-mDiff.innerText="N.A."
+    let luce = 0, gas = 0, kwh = 0, m3 = 0, nozcs = 0;
+    Object.values(datiAnno).forEach(d => {
+        luce += d.luce;
+        gas += d.gas;
+        kwh += d.kwh;
+        m3 += d.m3;
+        nozcs += d.nozcs;
+    });
 
+    yLuce.innerText = luce.toFixed(2);
+    yGas.innerText = gas.toFixed(2);
+    yTot.innerText = (luce + gas).toFixed(2);
+    yKwh.innerText = kwh;
+    yM3.innerText = m3;
+
+    if (nozcs == 0) {
+        yDiff.innerText = "N.A.";
+        yDiff.style.color = "white";
+    } else {
+        let diff = (nozcs - kwh).toFixed(2);
+        yDiff.innerText = diff;
+        yDiff.style.color = diff >= 0 ? "lime" : "red";
+    }
+
+    grafici(datiAnno); // aggiorna anche i grafici con l'anno selezionato
 }
 
-let luce=0
-let gas=0
-let kwh=0
-let m3=0
-let nozcs=0
-
-let datiAnno=db[a]||{}
-
-Object.values(datiAnno).forEach(d=>{
-luce+=d.luce
-gas+=d.gas
-kwh+=d.kwh
-m3+=d.m3
-nozcs+=d.nozcs
-})
-
-yLuce.innerText=luce.toFixed(2)
-yGas.innerText=gas.toFixed(2)
-yTot.innerText=(luce+gas).toFixed(2)
-yKwh.innerText=kwh
-yM3.innerText=m3
-
-if(nozcs==0){
-
-yDiff.innerText="N.A."
-
-}else{
-
-let diff=(nozcs-kwh).toFixed(2)
-yDiff.innerText=diff
-yDiff.style.color=diff>=0?"lime":"red"
-
-}
-
-grafici(datiAnno)
-aggiornaConfronto()
-
-}
-
-function totaleAnno(a){
-
-let dati=db[a]||{}
-
-let luce=0
-let gas=0
-let kwh=0
-let m3=0
-
-Object.values(dati).forEach(d=>{
-luce+=d.luce
-gas+=d.gas
-kwh+=d.kwh
-m3+=d.m3
-})
-
-return{luce,gas,kwh,m3}
-
-}
-
+// Collega l'evento al select
+riepilogoAnno.addEventListener("change", aggiornaRiepilogoAnno);
+// CONFRONTO ANNI
 function aggiornaConfronto(){
-
-let a1=Number(anno1.value)
-let a2=Number(anno2.value)
-
-if(!a1||!a2) return
-
-let y1=totaleAnno(a1)
-let y2=totaleAnno(a2)
-
-let diffEuro=(y2.luce+y2.gas)-(y1.luce+y1.gas)
-compEuro.innerText=diffEuro.toFixed(2)+" €"
-compEuro.style.color=diffEuro>=0?"red":"lime"
-
-let diffKwh=y2.kwh-y1.kwh
-compKwh.innerText=diffKwh
-compKwh.style.color=diffKwh>=0?"red":"lime"
-
-let diffGas=y2.gas-y1.gas
-compGas.innerText=diffGas.toFixed(2)+" €"
-compGas.style.color=diffGas>=0?"red":"lime"
-
+  let a1=Number(anno1.value), a2=Number(anno2.value); if(!a1||!a2) return;
+  let y1=totaleAnno(a1), y2=totaleAnno(a2);
+  let diffEuro=(y2.luce+y2.gas)-(y1.luce+y1.gas);
+  compEuro.innerText=diffEuro.toFixed(2)+" €"; compEuro.style.color=diffEuro>=0?"red":"lime";
+  let diffKwh=y2.kwh-y1.kwh; compKwh.innerText=diffKwh; compKwh.style.color=diffKwh>=0?"red":"lime";
+  let diffGas=y2.gas-y1.gas; compGas.innerText=diffGas.toFixed(2)+" €"; compGas.style.color=diffGas>=0?"red":"lime";
 }
 
+// CONFRONTO MESE
 function confrontoMese(){
-
-let a1=annoM1.value
-let a2=annoM2.value
-let m=meseComp.value
-
-let d1=db[a1]?.[m]
-let d2=db[a2]?.[m]
-
-if(!d1||!d2) return
-
-let diffLuce=d2.luce-d1.luce
-compMEuro.innerText=diffLuce.toFixed(2)+" €"
-compMEuro.style.color=diffLuce>=0?"red":"lime"
-
-let diffKwh=d2.kwh-d1.kwh
-compMKwh.innerText=diffKwh
-compMKwh.style.color=diffKwh>=0?"red":"lime"
-
-let diffGas=d2.gas-d1.gas
-compMGas.innerText=diffGas.toFixed(2)+" €"
-compMGas.style.color=diffGas>=0?"red":"lime"
-
+  let a1=annoM1.value, a2=annoM2.value, m=meseComp.value;
+  let d1=db[a1]?.[m], d2=db[a2]?.[m]; if(!d1||!d2) return;
+  let diffLuce=d2.luce-d1.luce; compMEuro.innerText=diffLuce.toFixed(2)+" €"; compMEuro.style.color=diffLuce>=0?"red":"lime";
+  let diffKwh=d2.kwh-d1.kwh; compMKwh.innerText=diffKwh; compMKwh.style.color=diffKwh>=0?"red":"lime";
+  let diffGas=d2.gas-d1.gas; compMGas.innerText=diffGas.toFixed(2)+" €"; compMGas.style.color=diffGas>=0?"red":"lime";
 }
 
+// CARICA ANNI NEI SELECT
 function caricaAnni(){
-
-let anni=Object.keys(db)
-
-anno1.innerHTML=""
-anno2.innerHTML=""
-annoM1.innerHTML=""
-annoM2.innerHTML=""
-
-anni.forEach(a=>{
-
-anno1.innerHTML+=`<option>${a}</option>`
-anno2.innerHTML+=`<option>${a}</option>`
-
-annoM1.innerHTML+=`<option>${a}</option>`
-annoM2.innerHTML+=`<option>${a}</option>`
-
-})
-
-meseComp.innerHTML=""
-
-mesi.forEach(m=>{
-
-meseComp.innerHTML+=`<option>${m}</option>`
-
-})
-
+  let anni=Object.keys(db); [anno1,anno2,annoM1,annoM2,riepilogoAnno,riepilogoAnnoMese].forEach(sel=>sel.innerHTML="");
+  anni.forEach(a=>{[anno1,anno2,annoM1,annoM2,riepilogoAnno,riepilogoAnnoMese].forEach(sel=>sel.innerHTML+=`<option>${a}</option>`);});
 }
 
-let chart1
-let chart2
-
+// GRAFICI
+let chart1, chart2;
 function grafici(dati){
-
-let kwh=mesi.map(m=>dati[m]?.kwh||0)
-let euro=mesi.map(m=>(dati[m]?.luce||0)+(dati[m]?.gas||0))
-
-if(chart1) chart1.destroy()
-if(chart2) chart2.destroy()
-
-chart1=new Chart(graficoKwh,{
-type:"line",
-data:{
-labels:mesi,
-datasets:[{
-label:"Consumo KWh",
-data:kwh,
-borderWidth:3
-}]
-}
-})
-
-chart2=new Chart(graficoEuro,{
-type:"bar",
-data:{
-labels:mesi,
-datasets:[{
-label:"Costi €",
-data:euro
-}]
-}
-})
-
+  let kwh=mesi.map(m=>dati[m]?.kwh||0);
+  let euro=mesi.map(m=>(dati[m]?.luce||0)+(dati[m]?.gas||0));
+  if(chart1) chart1.destroy(); if(chart2) chart2.destroy();
+  chart1=new Chart(graficoKwh,{type:"line",data:{labels:mesi,datasets:[{label:"Consumo KWh",data:kwh,borderWidth:3}]},options:{responsive:true}});
+  chart2=new Chart(graficoEuro,{type:"bar",data:{labels:mesi,datasets:[{label:"Costi €",data:euro}]},options:{responsive:true}});
 }
 
-function esporta(){
+// EXPORT/IMPORT
+function esporta(){const dati=localStorage.getItem("energiaDB"); if(!dati){alert("Non ci sono dati"); return;} const blob=new Blob([dati],{type:"application/json"}); const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download="energiaDB_backup.json"; a.click(); URL.revokeObjectURL(url);}
+function importa(){fileImport.click(); fileImport.onchange=e=>{const file=e.target.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=event=>{try{const datiImportati=JSON.parse(event.target.result); db={...db,...datiImportati}; localStorage.setItem("energiaDB",JSON.stringify(db)); aggiorna(); caricaAnni(); alert("Import completato");}catch(err){alert("Errore import");}}; reader.readAsText(file);};}
 
-const dati=localStorage.getItem("energiaDB")
+// POPUP
+function apriInserimento(){popupInserimento.style.display="flex";}
+function chiudiInserimento(){popupInserimento.style.display="none";}
+window.addEventListener("click", e=>{if(e.target===popupInserimento) popupInserimento.style.display="none";});
 
-if(!dati){
-alert("Non ci sono dati")
-return
-}
-
-const blob=new Blob([dati],{type:"application/json"})
-const url=URL.createObjectURL(blob)
-
-const a=document.createElement("a")
-a.href=url
-a.download="energiaDB_backup.json"
-a.click()
-
-URL.revokeObjectURL(url)
-
-}
-
-function importa(){
-
-fileImport.click()
-
-fileImport.onchange=(e)=>{
-
-const file=e.target.files[0]
-
-if(!file) return
-
-const reader=new FileReader()
-
-reader.onload=(event)=>{
-
-try{
-
-const datiImportati=JSON.parse(event.target.result)
-
-db={...db,...datiImportati}
-
-localStorage.setItem("energiaDB",JSON.stringify(db))
-
-aggiorna()
-caricaAnni()
-
-alert("Import completato")
-
-}catch(err){
-
-alert("Errore import")
-
-}
-
-}
-
-reader.readAsText(file)
-
-}
-
-}
-
-function apriInserimento(){
-popupInserimento.style.display="flex"
-}
-
-function chiudiInserimento(){
-popupInserimento.style.display="none"
-}
-
-window.addEventListener("click",function(e){
-
-if(e.target===popupInserimento){
-
-popupInserimento.style.display="none"
-
-}
-
-})
-
-anno.addEventListener("change",aggiorna)
-mese.addEventListener("change",aggiorna)
-
-anno1.addEventListener("change",aggiornaConfronto)
-anno2.addEventListener("change",aggiornaConfronto)
-
-annoM1.addEventListener("change",confrontoMese)
-annoM2.addEventListener("change",confrontoMese)
-meseComp.addEventListener("change",confrontoMese)
-
-caricaAnni()
-aggiorna()
-
+// EVENT LISTENER
+[anno,mese,riepilogoAnnoMese,riepilogoMese].forEach(el=>el.addEventListener("change",aggiorna));
+[anno1,anno2].forEach(el=>el.addEventListener("change",aggiornaConfronto));
+[annoM1,annoM2,meseComp].forEach(el=>el.addEventListener("change",confrontoMese));
 document.addEventListener("keydown", function(e){
+  if(e.key==="Enter"){
+    let inputs=[...document.querySelectorAll("#popupInserimento input")];
+    let index=inputs.indexOf(document.activeElement);
+    if(index>-1 && index<inputs.length-1){e.preventDefault(); inputs[index+1].focus();}
+  }
+});
 
-if(e.key === "Enter"){
-
-let inputs = [...document.querySelectorAll("#popupInserimento input")]
-
-let index = inputs.indexOf(document.activeElement)
-
-if(index > -1 && index < inputs.length - 1){
-
-e.preventDefault()
-inputs[index + 1].focus()
-
-}
-
-}
-
-})
+// INIZIALIZZAZIONE
+caricaAnni(); aggiorna();
 </script>
-
 </body>
 </html>
-
