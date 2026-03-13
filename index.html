@@ -257,24 +257,64 @@ function aggiornaRiepilogoAnno() {
 // Collega l'evento al select
 riepilogoAnno.addEventListener("change", aggiornaRiepilogoAnno);
 // CONFRONTO ANNI
-function aggiornaConfronto(){
-  let a1=Number(anno1.value), a2=Number(anno2.value); if(!a1||!a2) return;
-  let y1=totaleAnno(a1), y2=totaleAnno(a2);
-  let diffEuro=(y2.luce+y2.gas)-(y1.luce+y1.gas);
-  compEuro.innerText=diffEuro.toFixed(2)+" €"; compEuro.style.color=diffEuro>=0?"red":"lime";
-  let diffKwh=y2.kwh-y1.kwh; compKwh.innerText=diffKwh; compKwh.style.color=diffKwh>=0?"red":"lime";
-  let diffGas=y2.gas-y1.gas; compGas.innerText=diffGas.toFixed(2)+" €"; compGas.style.color=diffGas>=0?"red":"lime";
+function aggiornaConfronto() {
+  let a1 = Number(anno1.value);
+  let a2 = Number(anno2.value);
+  if (!a1 || !a2) return;
+
+  // Determina quale anno è più recente
+  let annoRecente = Math.max(a1, a2);
+  let annoPrecedente = Math.min(a1, a2);
+
+  let yRecente = totaleAnno(annoRecente);
+  let yPrecedente = totaleAnno(annoPrecedente);
+
+  let diffEuro = (yRecente.luce + yRecente.gas) - (yPrecedente.luce + yPrecedente.gas);
+  compEuro.innerText = diffEuro.toFixed(2) + " €";
+  compEuro.style.color = diffEuro >= 0 ? "red" : "lime";
+
+  let diffKwh = yRecente.kwh - yPrecedente.kwh;
+  compKwh.innerText = diffKwh;
+  compKwh.style.color = diffKwh >= 0 ? "red" : "lime";
+
+  let diffGas = yRecente.gas - yPrecedente.gas;
+  compGas.innerText = diffGas.toFixed(2) + " €";
+  compGas.style.color = diffGas >= 0 ? "red" : "lime";
 }
 
 // CONFRONTO MESE
-function confrontoMese(){
-  let a1=annoM1.value, a2=annoM2.value, m=meseComp.value;
-  let d1=db[a1]?.[m], d2=db[a2]?.[m]; if(!d1||!d2) return;
-  let diffLuce=d2.luce-d1.luce; compMEuro.innerText=diffLuce.toFixed(2)+" €"; compMEuro.style.color=diffLuce>=0?"red":"lime";
-  let diffKwh=d2.kwh-d1.kwh; compMKwh.innerText=diffKwh; compMKwh.style.color=diffKwh>=0?"red":"lime";
-  let diffGas=d2.gas-d1.gas; compMGas.innerText=diffGas.toFixed(2)+" €"; compMGas.style.color=diffGas>=0?"red":"lime";
-}
+function confrontoMese() {
+  let a1 = Number(annoM1.value);
+  let a2 = Number(annoM2.value);
+  let m = meseComp.value;
 
+  // Ordina gli anni: recente e precedente
+  let annoRecente = Math.max(a1, a2);
+  let annoPrecedente = Math.min(a1, a2);
+
+  let dRecente = db[annoRecente]?.[m];
+  let dPrecedente = db[annoPrecedente]?.[m];
+
+  if (!dRecente || !dPrecedente) {
+    compMEuro.innerText = "0 €";
+    compMKwh.innerText = "0";
+    compMGas.innerText = "0 €";
+    return;
+  }
+
+  let diffLuce = dRecente.luce - dPrecedente.luce;
+  let diffKwh = dRecente.kwh - dPrecedente.kwh;
+  let diffGas = dRecente.gas - dPrecedente.gas;
+
+  compMEuro.innerText = diffLuce.toFixed(2) + " €";
+  compMEuro.style.color = diffLuce >= 0 ? "red" : "lime";
+
+  compMKwh.innerText = diffKwh;
+  compMKwh.style.color = diffKwh >= 0 ? "red" : "lime";
+
+  compMGas.innerText = diffGas.toFixed(2) + " €";
+  compMGas.style.color = diffGas >= 0 ? "red" : "lime";
+}
 // CARICA ANNI NEI SELECT
 function caricaAnni(){
   let anni=Object.keys(db); [anno1,anno2,annoM1,annoM2,riepilogoAnno,riepilogoAnnoMese].forEach(sel=>sel.innerHTML="");
