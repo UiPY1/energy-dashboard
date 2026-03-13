@@ -338,7 +338,7 @@ function caricaAnni(){
   });
 
 [mese, riepilogoMese, meseComp].forEach(sel=>{
-  if(sel) sel.selectedIndex = new Date().getMonth();
+  if(sel) sel.selectedIndex = new Date().getMonth()-1;
 });
 
 }
