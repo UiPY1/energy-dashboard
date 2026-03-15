@@ -332,10 +332,14 @@ function caricaAnni(){
     });
   });
 
-  // seleziona automaticamente l'anno corrente
-  [anno1,anno2,annoM1,annoM2,riepilogoAnno,riepilogoAnnoMese].forEach(sel=>{
-    sel.value = annoCorrente;
-  });
+[anno1, annoM1, riepilogoAnno, riepilogoAnnoMese].forEach(sel => {
+  sel.value = annoCorrente;  // primo anno = anno corrente
+});
+
+[anno2, annoM2].forEach(sel => {
+  sel.value = annoCorrente - 1;  // secondo anno = anno precedente
+});
+
 
 [mese, riepilogoMese, meseComp].forEach(sel=>{
   if(sel) sel.selectedIndex = new Date().getMonth()-1;
