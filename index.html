@@ -191,7 +191,7 @@ function salva(){
 function cancella(){
   let a=anno.value, m=mese.value;
   if(db[a]&&db[a][m]) delete db[a][m]; localStorage.setItem("energiaDB", JSON.stringify(db));
-  aggiorna(); caricaAnni();
+  aggiorna(); //caricaAnni();
 }
 
 // SVUOTA INPUT
