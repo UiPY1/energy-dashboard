@@ -182,7 +182,7 @@ function salva(){
   function num(v){return Number(String(v).replace(",", "."))||0;}
   db[a][m]={luce:num(luce.value), gas:num(gas.value), kwh:num(kwh.value), m3:num(m3.value), nozcs:num(nozcs.value)};
   localStorage.setItem("energiaDB", JSON.stringify(db));
-  svuota(); aggiorna(); caricaAnni();
+  svuota(); aggiorna(); //caricaAnni();
   // mese successivo
   let index=mesi.indexOf(mese.value); if(index<mesi.length-1) mese.value=mesi[index+1];
 }
