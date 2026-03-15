@@ -1,6 +1,6 @@
 {
   "name": "Dashboard Energia",
-  "short_name": "Energia",
+  "short_name": "Bill Trace",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#0f172a",
