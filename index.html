@@ -37,10 +37,31 @@ canvas{margin-top:20px;width:100% !important;height:auto !important;}
 .popup{display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.7);z-index:999;justify-content:center;align-items:flex-start;overflow-y:auto;padding:20px;box-sizing:border-box;}
 .popup-content{background:#1e293b;padding:20px;border-radius:14px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;box-sizing:border-box;}
 .popup-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
-.closeBtn{background:#ef4444;color:white;border:none;padding:6px 10px;border-radius:8px;cursor:pointer;}
+.closeBtn {
+  background: #ef4444;
+  color: white;
+  border: none;
+  width: 32px;       /* larghezza fissa */
+  height: 32px;      /* altezza fissa → quadrato */
+  border-radius: 8px; /* angoli arrotondati */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;   /* dimensione della X */
+  padding: 0;        /* rimuove padding interno */
+}
+/* MOBILE POPUP - due input per riga */
 @media (max-width:600px){
-  body{padding:10px;}
-  .row{flex-direction:column;}
+  .row{
+    flex-wrap: wrap;
+    gap: 10px;
+    /* invece di column, lasciamo il wrap */
+  }
+  .row .field{
+    flex: 1 1 calc(50% - 10px); /* due input per riga */
+    min-width: calc(50% - 10px);
+  }
   button{width:100%;}
   .popup-content{width:100%;max-width:100%;max-height:none;}
 }
@@ -185,6 +206,7 @@ function salva(){
   svuota(); aggiorna(); //caricaAnni();
   // mese successivo
   let index=mesi.indexOf(mese.value); if(index<mesi.length-1) mese.value=mesi[index+1];
+  
 }
 
 // CANCELLA MESE
@@ -332,6 +354,7 @@ function caricaAnni(){
     });
   });
 
+ // seleziona automaticamente anno corrente e precedente
 [anno1, annoM1, riepilogoAnno, riepilogoAnnoMese].forEach(sel => {
   sel.value = annoCorrente;  // primo anno = anno corrente
 });
@@ -342,7 +365,7 @@ function caricaAnni(){
 
 
 [mese, riepilogoMese, meseComp].forEach(sel=>{
-  if(sel) sel.selectedIndex = new Date().getMonth()-1;
+  if(sel) sel.selectedIndex = new Date().getMonth() -1;
 });
 
 }
