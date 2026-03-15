@@ -408,7 +408,8 @@ function grafici(dati){
 
 // EXPORT/IMPORT
 function esporta(){const dati=localStorage.getItem("energiaDB"); if(!dati){alert("Non ci sono dati"); return;} const blob=new Blob([dati],{type:"application/json"}); const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download="energiaDB_backup.json"; a.click(); URL.revokeObjectURL(url);}
-function importa(){fileImport.click(); fileImport.onchange=e=>{const file=e.target.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=event=>{try{const datiImportati=JSON.parse(event.target.result); db={...db,...datiImportati}; localStorage.setItem("energiaDB",JSON.stringify(db)); aggiorna(); caricaAnni(); alert("Import completato");}catch(err){alert("Errore import");}}; reader.readAsText(file);};}
+function importa(){fileImport.click(); fileImport.onchange=e=>{const file=e.target.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=event=>{try{const datiImportati=JSON.parse(event.target.result); db={...db,...datiImportati}; localStorage.setItem("energiaDB",JSON.stringify(db)); aggiorna(); caricaAnni(); alert("Import completato");}catch(err){alert("Errore import");}}; reader.readAsText(file);};
+caricaAnni(); aggiorna();}
 
 // POPUP
 function apriInserimento(){popupInserimento.style.display="flex";}
